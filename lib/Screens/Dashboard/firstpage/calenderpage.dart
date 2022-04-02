@@ -1,7 +1,6 @@
 import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_neat_and_clean_calendar/flutter_neat_and_clean_calendar.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -9,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:medi_health1/addmedpage.dart';
 import 'package:medi_health1/controllers/medicationcontroller.dart';
-import 'package:medi_health1/mywidget.dart';
 
 import '../../../Constants.dart';
 import '../../../models/medication.dart';
@@ -72,6 +70,7 @@ class _CalenderPageState extends State<CalenderPage> {
                   onTap: () async{
                       await Get.to(()=> AddMedPage());
                       _taskController.getTasks();
+                      // notifyHelper.scheduledNotification();
 
                   },
                 ),
@@ -273,7 +272,9 @@ class _CalenderPageState extends State<CalenderPage> {
     required Color clr,
     bool isClose = false,
     required BuildContext context,
-}){
+})
+  {
+
     return GestureDetector(
       onTap: onTap,
       child: Container(

@@ -19,7 +19,7 @@ class firstLoginPage extends StatefulWidget {
 }
 
 class _firstLoginPageState extends State<firstLoginPage> {
-  String? loggedinUser;
+  String loggedinUser = " ";
   bool isChecked = false;
 
   bool isSignUpScreen = false;
@@ -113,6 +113,7 @@ class _firstLoginPageState extends State<firstLoginPage> {
                                   border: Border(
                                       bottom: BorderSide(color: Colors.black))),
                               child: TextField(
+                                keyboardType: TextInputType.name,
                                 controller: emailController,
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
@@ -123,6 +124,7 @@ class _firstLoginPageState extends State<firstLoginPage> {
                           Container(
                               padding: EdgeInsets.all(8.0),
                               child: TextField(
+                                keyboardType: TextInputType.name,
                                 obscureText: true,
                                 controller: passwordController,
                                 decoration: InputDecoration(
@@ -224,6 +226,7 @@ class _firstLoginPageState extends State<firstLoginPage> {
 
   signIn(String email, String password) async {
     DialogBuilder(context).showLoadingIndicator(
+
         "Please wait as we authenticate you", "Authentication");
     Map data = {'email': email, 'password': password};
     var jsonResponse;
@@ -233,6 +236,7 @@ class _firstLoginPageState extends State<firstLoginPage> {
     //use shared preferences to store username
     //in the shared preferences we can store the name
     if (response.statusCode == 200) {
+
       jsonResponse = json.decode(response.body);
       if (jsonResponse != null) {
         setState(() {
@@ -240,11 +244,14 @@ class _firstLoginPageState extends State<firstLoginPage> {
         });
         int isRegistered = jsonResponse['code'];
         var firstname = jsonResponse['fname'];
-        //print(firstname);
+        var emailAddress = jsonResponse['email'];
+        print(firstname);
+        print(emailAddress);
         if (isRegistered == 1) {
           //correct password
           //move to dashboard
           _prefs.addStringToSF("firstname", firstname);
+          _prefs.addStringToSF("emailAddress", emailAddress);
           Navigator.push(
               context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else {

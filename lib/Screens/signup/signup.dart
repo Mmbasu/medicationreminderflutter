@@ -2,10 +2,7 @@ import 'dart:convert';
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:medi_health1/Screens/signup/mytextfield.dart';
-import 'package:medi_health1/Screens/signup/signupbutton.dart';
 import 'package:http/http.dart' as http;
-import 'package:medi_health1/sharedprefferences.dart';
 import '../../mywidget.dart';
 import '../login/login.dart';
 
@@ -18,6 +15,7 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
 
+  TextEditingController fnameController = TextEditingController();
   TextEditingController emailController2 = TextEditingController();
   TextEditingController passwordController2 = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
@@ -108,6 +106,23 @@ class _SignupState extends State<Signup> {
                                 border: Border(
                                     bottom: BorderSide(color: Colors.black))),
                             child: TextField(
+                              keyboardType: TextInputType.name,
+                              controller: fnameController,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Username",
+                                hintStyle: TextStyle(color: Colors.grey[400]),
+
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(color: Colors.black))),
+                            child: TextField(
+                              keyboardType: TextInputType.name,
                               controller: emailController2,
                               decoration: InputDecoration(
                                 border: InputBorder.none,
@@ -122,6 +137,7 @@ class _SignupState extends State<Signup> {
                                 border: Border(
                                     bottom: BorderSide(color: Colors.black))),
                             child: TextField(
+                              keyboardType: TextInputType.name,
                               controller: passwordController2,
                               obscureText: true,
                               decoration: InputDecoration(
@@ -135,6 +151,7 @@ class _SignupState extends State<Signup> {
                           Container(
                             padding: EdgeInsets.all(8.0),
                             child: TextField(
+                              keyboardType: TextInputType.name,
                               controller: confirmPasswordController,
                               obscureText: true,
                               decoration: InputDecoration(
@@ -149,7 +166,7 @@ class _SignupState extends State<Signup> {
                       ),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 10,
                     ),
                     MaterialButton(
                       minWidth: double.infinity,
@@ -178,7 +195,13 @@ class _SignupState extends State<Signup> {
     );
   }
   void signUpFunction() {
-    if (emailController2.text.isEmpty) {
+    if (fnameController.text.isEmpty) {
+      scaffoldMessenger.showSnackBar(
+        mySnackBar("Provide Username"),
+      );
+      return;
+    }
+    else if (emailController2.text.isEmpty) {
       scaffoldMessenger.showSnackBar(
         mySnackBar("Provide Email"),
       );
@@ -206,18 +229,19 @@ class _SignupState extends State<Signup> {
       );
       return;
     } else { //call singup function
+      print(fnameController.text);
       print(emailController2.text);
       print(passwordController2.text);
       print(confirmPasswordController.text);
 
-      signUp(emailController2.text, passwordController2.text);
+      signUp(fnameController.text,emailController2.text, passwordController2.text);
     }
   }
 
-  signUp(String email, String password) async {
+  signUp(String email, String password, String fname) async {
     DialogBuilder(context).showLoadingIndicator(
         "Please wait as we create your account", "Creating");
-    Map data = {'email': email, 'password': password};
+    Map data = {'email': email, 'password': password, 'fname': fname};
     var jsonResponse;
     var response = await http.post(
         Uri.parse("https://medihealth2.000webhostapp.com/register.php"),

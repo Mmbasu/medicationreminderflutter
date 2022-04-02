@@ -3,9 +3,14 @@ import 'package:sqflite/sqflite.dart';
 import '../models/medication.dart';
 
 class DBHelper{
+
+  DBHelper.internal();
+  static final DBHelper instance = new DBHelper.internal();
+  factory DBHelper() => instance;
+
   static Database? _db;
   static final int _version = 1;
-  static final String _tableName = "tasks";
+  static final String tasksTable = "tasks";
 
   static Future<void> initDb()async{
     if(_db !=null){
@@ -19,7 +24,7 @@ class DBHelper{
         onCreate: (db, version){
           print("Creating a new one");
           return db.execute(
-            "CREATE TABLE $_tableName("
+            "CREATE TABLE $tasksTable("
                 "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 "title STRING, note TEXT, date STRING,"
                 "startTime STRING, endTime STRING,"
@@ -36,16 +41,16 @@ class DBHelper{
 
   static Future<int> insert(Task? task) async{
     print("insert function called");
-    return await _db?.insert(_tableName, task!.toJson())??1;
+    return await _db?.insert(tasksTable, task!.toJson())??1;
   }
 
   static Future<List<Map<String, dynamic >>> query() async{
     print("query function called");
-    return await _db!.query(_tableName);
+    return await _db!.query(tasksTable);
 }
 
 static delete(Task task) async {
-    return await _db!.delete(_tableName, where: 'id=?', whereArgs: [task.id]);
+    return await _db!.delete(tasksTable, where: 'id=?', whereArgs: [task.id]);
 }
 
 static update(int id) async{

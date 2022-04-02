@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:medi_health1/Screens/Dashboard/firstpage/calenderpage.dart';
 import 'package:medi_health1/Screens/settings/settings.dart';
 import 'package:medi_health1/icons.dart';
 
+import '../../controllers/medicationcontroller.dart';
+import '../../models/medication.dart';
 import '../../notification_services.dart';
 import '../../sharedprefferences.dart';
+import '../../tasktile.dart';
 import '../addmedication/addmedication.dart';
 import '../../addmedpage.dart';
 import 'firstpage/firstdashboard.dart';
 import 'secondpage/seconddashboard.dart';
-import 'thirdpage/thirddashboard.dart';
 
 
 
@@ -22,11 +28,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  final _taskController = Get.put(TaskController());
+
   final Preferences _prefs = Preferences();
 
-  var loggedinUser = " ";
+  String loggedinUser = " ";
 
-  late var greetings = "Hello";
+  String greetings = "Hello";
   //
   // int pageIndex = 0;
   //
@@ -42,8 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final page = [
     CalenderPage(),
     Page2(),
-    Page3(),
     AddMedPage(),
+    // MySettings(),
   ];
 
   var notifyHelper;
@@ -63,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => {
         //print(firstname),
         loggedinUser = firstname!,
+
       })
     });
 
@@ -70,15 +79,17 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         elevation: 0,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 5),
-          child: Image.network("https://medihealth2.000webhostapp.com/userprofilepictures/griffin.jpg"),
-
-            // onPressed: () {
-            //   print('Click leading');
-            // },
-          //),
-        ),
+        // leading: Padding(
+        //   padding: EdgeInsets.only(left: 5),
+        //   child: CircleAvatar(
+        //     backgroundImage: NetworkImage("https://medihealth2.000webhostapp.com/userprofilepicturefdres/griffin.jpg"),
+        //   )
+        //
+        //     // onPressed: () {
+        //     //   print('Click leading');
+        //     // },
+        //   //),
+        // ),
         automaticallyImplyLeading: false,
         title:  Text( "Hello "+ loggedinUser),
         titleTextStyle: TextStyle(color: Colors.black,
@@ -86,36 +97,23 @@ class _HomeScreenState extends State<HomeScreen> {
           fontSize: 20),
         backgroundColor: Color(0xFF94C3DD),
 
-        actions: [
-          PopupMenuButton<int>(
-              color: Color(0xFF94C3DD),
-              onSelected: (result){
-                if(result==0){
-                  notifyHelper.displayNotification(
-                      title: "Medihealth",
-                      body:"Welcome"
-                  );
-                 //notifyHelper.scheduledNotification();
 
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MySettings()));
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: Row(
-                    children: [
-                      Icon(Icons.settings),
-                      //const SizedBox(width: 8),
-                      Text('Settings'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+    Navigator.push(
+    context,
+    MaterialPageRoute(
+    builder: (context) => MySettings()));
+              });
+            },
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+              size: 35,
+            )
+          ),
         ],
 
       ),
@@ -135,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          IconButton(
+          TextButton.icon(
             onPressed: () {
               setState(() {
                 pageIndexes = 0;
@@ -144,50 +142,47 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: pageIndexes == 0
                 ? const Icon(
                     Icons.home_filled,
-                    color: Colors.black,
+                    color: Colors.black54,
                     size: 35,
                   )
                 : const Icon(
                     Icons.home_outlined,
                     color: Colors.white,
                     size: 35,
-                  ),
+                  ), label: Text(
+            "Home",
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-          IconButton(
+          ),
+          TextButton.icon(
             onPressed: () {
               setState(() {
+
                 pageIndexes = 1;
               });
             },
             icon: pageIndexes == 1
                 ? const Icon(
                     MyFlutterApp.pill_svgrepo_com__3_,
-                    color: Colors.black,
+                    color: Colors.black54,
                     size: 35,
                   )
                 : const Icon(
                     MyFlutterApp.pill_svgrepo_com__2_,
                     color: Colors.white,
                     size: 35,
-                  ),
+                  ), label: Text(
+            "Meds",
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
           ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                pageIndexes = 2;
-              });
-            },
-            icon: pageIndexes == 2
-                ? const Icon(
-                    Icons.more,
-                    color: Colors.black,
-                    size: 35,
-                  )
-                : const Icon(
-                    Icons.more_outlined,
-                    color: Colors.white,
-                    size: 35,
-                  ),
           ),
         ],
       ),

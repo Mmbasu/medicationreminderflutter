@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:medi_health1/Constants.dart';
@@ -33,7 +34,7 @@ class TaskTile extends StatelessWidget {
                     textStyle: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                        color: Colors.black54),
                   ),
                 ),
                 SizedBox(
@@ -44,7 +45,7 @@ class TaskTile extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.access_time_rounded,
-                      color: Colors.grey[200],
+                      color: Colors.black54,
                       size: 18,
                     ),
                     SizedBox(width: 4),
@@ -52,7 +53,7 @@ class TaskTile extends StatelessWidget {
                       "${task!.startTime} - ${task!.endTime}",
                       style: GoogleFonts.lato(
                         textStyle:
-                        TextStyle(fontSize: 13, color: Colors.grey[100]),
+                        TextStyle(fontSize: 13, color: Colors.black54),
                       ),
                     ),
                   ],
@@ -61,7 +62,7 @@ class TaskTile extends StatelessWidget {
                 Text(
                   task?.note??"",
                   style: GoogleFonts.lato(
-                    textStyle: TextStyle(fontSize: 15, color: Colors.grey[100]),
+                    textStyle: TextStyle(fontSize: 15, color: Colors.black54),
                   ),
                 ),
               ],
@@ -81,7 +82,7 @@ class TaskTile extends StatelessWidget {
                 textStyle: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white),
+                    color: Colors.black54),
               ),
             ),
           ),

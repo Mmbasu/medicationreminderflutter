@@ -64,8 +64,8 @@ class NotifyHelper{
   scheduledNotification(int hour, int minutes, Task task) async {
     await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
-        'scheduled title',
-        'theme changes 5 seconds ago',
+        'MediHealth',
+        'Its Medication Time',
         _convertTime(hour, minutes),
         //tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
         const NotificationDetails(
@@ -74,7 +74,8 @@ class NotifyHelper{
         androidAllowWhileIdle: true,
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time
+        matchDateTimeComponents: DateTimeComponents.time,
+        //matchDateTimeComponents: DateTimeComponents.DayOfWeekAndTime
     );
 
   }

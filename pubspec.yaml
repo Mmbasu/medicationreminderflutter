@@ -54,6 +54,15 @@ dependencies:
   date_picker_timeline:
   sqflite:
   flutter_staggered_animations:
+  file_picker: ^4.5.1
+  flutter_share: ^2.0.0
+  screenshot: ^1.2.3
+  image_picker: ^0.8.4+11
+  share_plus: ^4.0.3
+  share: ^2.0.4
+  connectivity_plus: ^2.2.1
+
+
 
 dev_dependencies:
   flutter_test:
@@ -90,6 +99,9 @@ flutter:
     - assets/hospitalicon2.png
     - assets/pillicon.png
     - assets/accountphoto.png
+    - assets/email.png
+    - assets/phone.png
+    - assets/twitter.png
 
   fonts:
     - family: MyFlutterApp

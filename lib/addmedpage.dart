@@ -1,16 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:intl/intl.dart';
-import 'package:medi_health1/Screens/Dashboard/firstpage/calenderpage.dart';
 import 'package:medi_health1/inputfield.dart';
-
+import 'package:medi_health1/sharedprefferences.dart';
 import 'Constants.dart';
+import 'Screens/settings/settings.dart';
 import 'controllers/medicationcontroller.dart';
 import 'models/medication.dart';
 import 'mywidget.dart';
+import 'package:http/http.dart' as http;
 
 
 
@@ -22,6 +25,12 @@ class AddMedPage extends StatefulWidget {
 }
 
 class _AddMedPageState extends State<AddMedPage> {
+
+  final Preferences _prefs = Preferences();
+
+  String loggedinUseremailAddress = " ";
+
+  var loggedinUser = " ";
   final TaskController _taskController = Get.put(TaskController());
 
   TextEditingController _titleController = TextEditingController();
@@ -50,25 +59,58 @@ class _AddMedPageState extends State<AddMedPage> {
   late ScaffoldMessengerState scaffoldMessenger;
 
 
+
   @override
   Widget build(BuildContext context) {
+
+    _prefs.getStringValuesSF("emailAddress").then((emailAddress) => {
+      setState(() => {
+        //print(firstname),
+        loggedinUseremailAddress = emailAddress!,
+
+      })
+    });
     scaffoldMessenger = ScaffoldMessenger.of(context);
     return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 5),
-            child: Image.network("https://medihealth2.000webhostapp.com/userprofilepictures/griffin.jpg"),
+      appBar: AppBar(
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 5),
+          child: Image.network("https://medihealth2.000webhostapp.com/userprofilepictures/griffin.jpg"),
 
-          ),
-          automaticallyImplyLeading: false,
-          title:  Text( "Hello "),
-          titleTextStyle: TextStyle(color: Colors.black,
-              //fontWeight: FontWeight.w600,
-              fontSize: 20),
-          backgroundColor: Color(0xFF94C3DD),
-
+          // onPressed: () {
+          //   print('Click leading');
+          // },
+          //),
         ),
+        automaticallyImplyLeading: false,
+        title:  Text( "Hello "+ loggedinUser),
+        titleTextStyle: TextStyle(color: Colors.black,
+            //fontWeight: FontWeight.w600,
+            fontSize: 20),
+        backgroundColor: Color(0xFF94C3DD),
+
+
+        actions: [
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MySettings()));
+                });
+              },
+              icon: Icon(
+                Icons.settings,
+                color: Colors.white,
+                size: 35,
+              )
+          ),
+        ],
+
+      ),
+
 
       body: Container(
         padding: const EdgeInsets.only(left: 20, right: 20),
@@ -79,8 +121,8 @@ class _AddMedPageState extends State<AddMedPage> {
               Text("Add Medication",
               style: HeadingStyle,
               ),
-              MyInputField(title: "Title", hint: "Enter your title", inputfieldcontroller: _titleController,),
-              MyInputField(title: "Note", hint: "Enter your Note", inputfieldcontroller: _noteController,),
+              MyInputField(title: "Medication", hint: "Enter your medication name", inputfieldcontroller: _titleController,),
+              MyInputField(title: "Type", hint: "Enter the type of medication", inputfieldcontroller: _noteController,),
               MyInputField(title: "Date", hint: DateFormat.yMd().format(_selectedDate),
               widget: IconButton(
                 icon: Icon(Icons.calendar_today_outlined,
@@ -115,7 +157,7 @@ class _AddMedPageState extends State<AddMedPage> {
                         hint: _endTime,
                         widget: IconButton(
                           onPressed: (){
-                            getTimeFromUser(isStartTime: false);
+                            getTimeFromUser(isStartTime: false).toString();
                           },
                           icon: Icon(Icons.access_time_rounded),
                           color: Colors.grey,
@@ -125,31 +167,8 @@ class _AddMedPageState extends State<AddMedPage> {
                 ],
               ),
 
-              MyInputField(title: "Remind", hint: "$_selectedRemind minutes early",
-                  widget: DropdownButton(
-                    icon:Icon(Icons.keyboard_arrow_down,
-                      color: Colors.grey,
-                    ),
-                    iconSize: 32,
-                    elevation: 4,
-                    style: subTitleStyle,
-                    underline: Container(height: 0,),
-                    items: remindList.map<DropdownMenuItem<String>>((int value){
-                      return DropdownMenuItem<String>(
-                        value: value.toString(),
-                        child: Text(value.toString()),
-                      );
-                    }
-                    ).toList(),
-                    onChanged: (String? newvalue) {
-                      setState(() {
-                        _selectedRemind = int.parse(newvalue!);
-                      });
-                    },
-              ),
-              ),
 
-              MyInputField(title: "Repeat", hint: "$_selectedRepeat",
+              MyInputField(title: "Frequency", hint: "$_selectedRepeat",
                 widget: DropdownButton(
                   icon:Icon(Icons.keyboard_arrow_down,
                     color: Colors.grey,
@@ -231,15 +250,29 @@ class _AddMedPageState extends State<AddMedPage> {
     );
   }
 
-  _validateTextData(){
+  _validateTextData() {
     print(_noteController.text);
     print(_titleController.text);
+    print(loggedinUseremailAddress);
+    print(_noteController.text);
+    print(_titleController.text);
+    print( _selectedDate);
+    print(_startTime);
+    print(_endTime);
+    // print(_selectedRemind);
+    print(_selectedRepeat);
+    // print(_selectedColor);
     if(_titleController.text.isNotEmpty&&_noteController.text.isNotEmpty){
       _addMedToDb();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => CalenderPage()));
+      addMed(loggedinUseremailAddress, _noteController.text, _titleController.text, _selectedDate.toString(), _startTime, _endTime, _selectedRepeat);
+      scaffoldMessenger.showSnackBar(
+        mySnackBar("Medication Added"),
+      );
+
+      // Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => CalenderPage()));
     }else if(_titleController.text.isEmpty || _noteController.text.isEmpty){
       scaffoldMessenger.showSnackBar(
         mySnackBar("Provide Title and Note"),
@@ -316,5 +349,45 @@ _addMedToDb() async {
     );
     print("My id is "+"$value");
 }
+
+  addMed(email, note, title, date, startTime, endTime, repeat) async {
+    DialogBuilder(context).showLoadingIndicator(
+        "Please wait as we create your account", "Creating");
+    Map data = {'email': email, 'note': note, 'title': title, 'date': date, 'startTime': startTime, 'endTime': endTime, 'repeat': repeat};
+    var jsonResponse;
+    var response = await http.post(
+        Uri.parse("https://medihealth2.000webhostapp.com/addmed.php"),
+        body: data);
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          DialogBuilder(context).hideOpenDialog();
+        });
+        int isRegistered = jsonResponse['code'];
+        if (isRegistered == 1) {//correct password
+          //move to dashboard
+          scaffoldMessenger.showSnackBar(
+            mySnackBar("Medication saved to server"),
+          );
+          // Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => firstLoginPage()));
+        } else {
+
+          scaffoldMessenger.showSnackBar(
+            mySnackBar("Failed to load to server"),
+          );
+        }
+      }
+    } else {
+
+
+      setState(() {
+        DialogBuilder(context).hideOpenDialog();
+      });
+    }
+  }
 
 }
