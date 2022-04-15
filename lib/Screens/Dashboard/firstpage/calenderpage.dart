@@ -74,17 +74,6 @@ class _CalenderPageState extends State<CalenderPage> {
 
                   },
                 ),
-                // FloatingActionButton.extended(
-                //   icon: Icon(Icons.add),
-                //   backgroundColor: Color(0xFF94C3DD),
-                //   label: Text("Add Med"),
-                //   onPressed: () async {
-                //     await Navigator.push(context,
-                //         MaterialPageRoute(
-                //             builder: (context) => AddMedPage()));
-                //     _taskController.getTasks();
-                //   },
-                // ),
               ],
             ),
           ),
@@ -105,21 +94,21 @@ class _CalenderPageState extends State<CalenderPage> {
                           textStyle: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey,
+                            color: Colors.black54,
                           ),
                         ),
                         dayTextStyle: GoogleFonts.lato(
                           textStyle: TextStyle(
                             fontSize:16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey,
+                            color: Colors.black54,
                           ),
                         ),
                         monthTextStyle: GoogleFonts.lato(
                           textStyle: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
-                            color: Colors.grey,
+                            color: Colors.black54,
                           ),
                         ),
                       onDateChange: (date){
@@ -148,7 +137,7 @@ class _CalenderPageState extends State<CalenderPage> {
             itemBuilder: (_, index){
               Task task = _taskController.taskList[index];
               //print(task.toJson());
-              if(task.repeat=='Daily') {
+              if(task.repeating=='Daily') {
                 DateTime date = DateFormat.jm().parse(task.startTime.toString());
                 var myTime = DateFormat("HH:mm").format(date);
                 notifyHelper.scheduledNotification(

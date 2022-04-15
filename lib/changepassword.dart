@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:medi_health1/inputfield.dart';
+import 'package:medi_health1/sharedprefferences.dart';
 import 'Constants.dart';
 import 'Screens/settings/settings.dart';
 import 'mywidget.dart';
@@ -28,30 +29,32 @@ class _changePasswordState extends State<changePassword> {
 
   var loggedinUser = " ";
 
+  final Preferences _prefs = Preferences();
 
   late ScaffoldMessengerState scaffoldMessenger;
 
 
   @override
   Widget build(BuildContext context) {
+
+
+    _prefs.getStringValuesSF("firstname").then((firstname) => {
+      setState(() => {
+        //print(firstname),
+        loggedinUser = firstname!,
+
+      })
+    });
+
+
     scaffoldMessenger = ScaffoldMessenger.of(context);
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 5),
-          child: Image.network(
-              "https://medihealth2.000webhostapp.com/userprofilepictures/griffin.jpg"),
-
-          // onPressed: () {
-          //   print('Click leading');
-          // },
-          //),
-        ),
         automaticallyImplyLeading: false,
         title: Text("Hello " + loggedinUser),
-        titleTextStyle: TextStyle(color: Colors.black,
-            //fontWeight: FontWeight.w600,
+        titleTextStyle: TextStyle(color: Colors.black54,
+            fontWeight: FontWeight.w600,
             fontSize: 20),
         backgroundColor: Color(0xFF94C3DD),
 
@@ -104,7 +107,10 @@ class _changePasswordState extends State<changePassword> {
               FloatingActionButton.extended(
                 onPressed: changePasswordFunction,
                 backgroundColor: Color(0xFF94C3DD),
-                label: Text("Change Password"),
+                label: Text("Change Password",
+                style: TextStyle(
+                  color: Colors.black54,
+                ),),
               ),
 
             ],
@@ -143,17 +149,17 @@ class _changePasswordState extends State<changePassword> {
       return;
     }
     else {
-      //signIn(emailController.text, passwordController.text);
+      changePassword(emailController.text, previouspasswordController.text, newpasswordController.text);
     }
   }
 
   changePassword(String email, String password, String newPassword) async {
     DialogBuilder(context).showLoadingIndicator(
-        "Please wait as we authenticate you", "Authentication");
+        "Please wait as we change your Password", "Changing");
     Map data = {'email': email, 'password': password, 'newPassword':newPassword};
     var jsonResponse;
     var response = await http.post(
-        Uri.parse("https://medihealth2.000webhostapp.com/login.php"),
+        Uri.parse("https://medihealth2.000webhostapp.com/changePassword.php"),
         body: data);
     //use shared preferences to store username
     //in the shared preferences we can store the name
@@ -169,7 +175,7 @@ class _changePasswordState extends State<changePassword> {
           //     context, MaterialPageRoute(builder: (context) => HomeScreen()));
         } else {
           scaffoldMessenger.showSnackBar(
-            mySnackBar("Wrong Credentials"),
+            mySnackBar("Did not Change"),
           );
         }
       }

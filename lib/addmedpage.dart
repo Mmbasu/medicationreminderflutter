@@ -63,9 +63,15 @@ class _AddMedPageState extends State<AddMedPage> {
   @override
   Widget build(BuildContext context) {
 
+    _prefs.getStringValuesSF("firstname").then((firstname) => {
+      setState(() => {
+        loggedinUser = firstname!,
+
+      })
+    });
+
     _prefs.getStringValuesSF("emailAddress").then((emailAddress) => {
       setState(() => {
-        //print(firstname),
         loggedinUseremailAddress = emailAddress!,
 
       })
@@ -74,19 +80,10 @@ class _AddMedPageState extends State<AddMedPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 5),
-          child: Image.network("https://medihealth2.000webhostapp.com/userprofilepictures/griffin.jpg"),
-
-          // onPressed: () {
-          //   print('Click leading');
-          // },
-          //),
-        ),
         automaticallyImplyLeading: false,
         title:  Text( "Hello "+ loggedinUser),
-        titleTextStyle: TextStyle(color: Colors.black,
-            //fontWeight: FontWeight.w600,
+        titleTextStyle: TextStyle(color: Colors.black54,
+            fontWeight: FontWeight.w600,
             fontSize: 20),
         backgroundColor: Color(0xFF94C3DD),
 
@@ -251,28 +248,16 @@ class _AddMedPageState extends State<AddMedPage> {
   }
 
   _validateTextData() {
-    print(_noteController.text);
-    print(_titleController.text);
     print(loggedinUseremailAddress);
     print(_noteController.text);
     print(_titleController.text);
     print( _selectedDate);
     print(_startTime);
     print(_endTime);
-    // print(_selectedRemind);
     print(_selectedRepeat);
-    // print(_selectedColor);
     if(_titleController.text.isNotEmpty&&_noteController.text.isNotEmpty){
       _addMedToDb();
       addMed(loggedinUseremailAddress, _noteController.text, _titleController.text, _selectedDate.toString(), _startTime, _endTime, _selectedRepeat);
-      scaffoldMessenger.showSnackBar(
-        mySnackBar("Medication Added"),
-      );
-
-      // Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => CalenderPage()));
     }else if(_titleController.text.isEmpty || _noteController.text.isEmpty){
       scaffoldMessenger.showSnackBar(
         mySnackBar("Provide Title and Note"),
@@ -342,7 +327,7 @@ _addMedToDb() async {
         startTime: _startTime,
         endTime: _endTime,
         remind: _selectedRemind,
-        repeat: _selectedRepeat,
+        repeating: _selectedRepeat,
         color: _selectedColor,
         isCompleted:0,
       )
@@ -350,10 +335,10 @@ _addMedToDb() async {
     print("My id is "+"$value");
 }
 
-  addMed(email, note, title, date, startTime, endTime, repeat) async {
+  addMed(email, note, title, date, startTime, endTime, repeating) async {
     DialogBuilder(context).showLoadingIndicator(
-        "Please wait as we create your account", "Creating");
-    Map data = {'email': email, 'note': note, 'title': title, 'date': date, 'startTime': startTime, 'endTime': endTime, 'repeat': repeat};
+        "Please wait as we add your medication", "Adding");
+    Map data = {'email': email, 'note': note, 'title': title, 'date': date, 'startTime': startTime, 'endTime': endTime, 'repeating': repeating};
     var jsonResponse;
     var response = await http.post(
         Uri.parse("https://medihealth2.000webhostapp.com/addmed.php"),
@@ -377,7 +362,7 @@ _addMedToDb() async {
         } else {
 
           scaffoldMessenger.showSnackBar(
-            mySnackBar("Failed to load to server"),
+            mySnackBar("Failed to add"),
           );
         }
       }

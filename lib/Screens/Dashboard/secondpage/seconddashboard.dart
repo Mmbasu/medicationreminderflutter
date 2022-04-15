@@ -24,7 +24,7 @@ Future <List<Data>> fetchData() async {
     List jsonResponse = json.decode(response.body);
     return jsonResponse.map((data) => new Data.fromJson(data)).toList();
   } else {
-    throw Exception('Unexpected error occured!');
+    throw Exception('Unexpected error occurred!');
   }
 }
 
@@ -32,16 +32,16 @@ class Data {
   final String note;
   final String title;
   final String date;
-  final String repeat;
+  final String repeating;
 
-  Data({required this.note, required this.title, required this.date, required this.repeat});
+  Data({required this.note, required this.title, required this.date, required this.repeating});
 
   factory Data.fromJson(Map<String, dynamic> json) {
     return Data(
-      note: json['note'],
-      title: json['title'],
-      date: json['date'],
-      repeat:json['repeat']
+        note: json['note'],
+        title: json['title'],
+        date: json['date'],
+        repeating:json['repeating']
     );
   }
 }
@@ -72,7 +72,10 @@ class _Page2State extends State<Page2> {
     return Scaffold(
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => removemed()));
+        },
         icon: Icon(Icons.remove),
         backgroundColor: Color(0xFF94C3DD),
         label: Text("Remove Med"),
@@ -96,7 +99,7 @@ class _Page2State extends State<Page2> {
                     itemBuilder: (context, index) => Card(
                       color: Color(0xFF94C3DD),
                       shape: RoundedRectangleBorder(
-                          //side: BorderSide(color: Colors.white, width: 2.0),
+                        //side: BorderSide(color: Colors.white, width: 2.0),
                           borderRadius: BorderRadius.circular(20)),
                       elevation: 1,
                       margin: EdgeInsets.all(20.0),
@@ -104,25 +107,25 @@ class _Page2State extends State<Page2> {
                         leading: Icon(MyFlutterApp.pill_svgrepo_com__3_),
                         title: Text("${snapshot.data![index].title}", style: GoogleFonts.lato(
                           textStyle: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              //color: Colors.black
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            //color: Colors.black
                           ),
                         ),),
-                        subtitle: Text("${snapshot.data![index].repeat}", style: GoogleFonts.lato(
+                        subtitle: Text("${snapshot.data![index].repeating}", style: GoogleFonts.lato(
                           textStyle: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              //color: Colors.black
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            //color: Colors.black
                           ),),),
                         trailing: Text("${snapshot.data![index].note}", style: GoogleFonts.lato(
                           textStyle: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              //color: Colors.black
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            //color: Colors.black
                           ),),
-                      ),
-              ),),
+                        ),
+                      ),),
                   );
               } else if (snapshot.hasError) {
                 return Text("${snapshot.error}");

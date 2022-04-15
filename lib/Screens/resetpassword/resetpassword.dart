@@ -134,7 +134,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                       //defining the shape
                       color: Color(0xFF94C3DD),
                       shape: RoundedRectangleBorder(
-                          side: BorderSide(color: Colors.black),
+                          side: BorderSide(color: Colors.black54),
                           borderRadius: BorderRadius.circular(20)),
                       child: Text(
                         "Reset Password",

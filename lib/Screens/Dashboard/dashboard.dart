@@ -92,8 +92,8 @@ class _HomeScreenState extends State<HomeScreen> {
         // ),
         automaticallyImplyLeading: false,
         title:  Text( "Hello "+ loggedinUser),
-        titleTextStyle: TextStyle(color: Colors.black,
-          //fontWeight: FontWeight.w600,
+        titleTextStyle: TextStyle(color: Colors.black54,
+          fontWeight: FontWeight.w600,
           fontSize: 20),
         backgroundColor: Color(0xFF94C3DD),
 

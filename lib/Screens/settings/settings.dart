@@ -144,7 +144,7 @@ class _MySettingsState extends State<MySettings> {
                     onTap: () async {
                       removeValues();
 
-                      await Navigator.push(
+                      await Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => firstLoginPage()));
@@ -295,7 +295,9 @@ class _MySettingsState extends State<MySettings> {
               const SizedBox(
                 height: 15,
               ),
-              _botomButton(label: "Delete Account", onTap: (){}, clr: Colors.red[300]!, context: context),
+              _botomButton(label: "Delete Account", onTap: (){
+                deleteAccount(logoutUser);
+              }, clr: Colors.red[300]!, context: context),
               _botomButton(label: "Go Back", onTap: (){
                 Get.back();
               }, clr: primaryColor, context: context)
@@ -337,49 +339,41 @@ class _MySettingsState extends State<MySettings> {
 
   }
 
-  // deleteAccount(String email, String password) async {
-  //   DialogBuilder(context).showLoadingIndicator(
-  //       "Please wait as we authenticate you", "Authentication");
-  //   Map data = {'email': email, 'password': password};
-  //   var jsonResponse;
-  //   var response = await http.post(
-  //       Uri.parse("https://medihealth2.000webhostapp.com/login.php"),
-  //       body: data);
-  //   //use shared preferences to store username
-  //   //in the shared preferences we can store the name
-  //   if (response.statusCode == 200) {
-  //
-  //
-  //
-  //
-  //
-  //     jsonResponse = json.decode(response.body);
-  //     if (jsonResponse != null) {
-  //       setState(() {
-  //         DialogBuilder(context).hideOpenDialog();
-  //       });
-  //       int isRegistered = jsonResponse['code'];
-  //       var firstname = jsonResponse['fname'];
-  //       //print(firstname);
-  //       if (isRegistered == 1) {
-  //         //correct password
-  //         //move to dashboard
-  //         _prefs.addStringToSF("firstname", firstname);
-  //         Navigator.push(
-  //             context, MaterialPageRoute(builder: (context) => HomeScreen()));
-  //       } else {
-  //         //wrongpassword use SnackBar to Show
-  //         scaffoldMessenger.showSnackBar(
-  //           mySnackBar("Wrong Credentials"),
-  //         );
-  //       }
-  //     }
-  //   } else {
-  //     setState(() {
-  //       DialogBuilder(context).hideOpenDialog();
-  //     });
-  //   }
-  // }
+  deleteAccount(String email) async {
+    DialogBuilder(context).showLoadingIndicator(
+        "We are deleting your account", "Deleting");
+    Map data = {'email': email};
+    var jsonResponse;
+    var response = await http.post(
+        Uri.parse("https://medihealth2.000webhostapp.com/deleteaccount.php"),
+        body: data);
+    //use shared preferences to store username
+    //in the shared preferences we can store the name
+    if (response.statusCode == 200) {
+      jsonResponse = json.decode(response.body);
+      if (jsonResponse != null) {
+        setState(() {
+          DialogBuilder(context).hideOpenDialog();
+        });
+        int isRegistered = jsonResponse['code'];
+        if (isRegistered == 1) {
+          //correct password
+          //move to dashboard
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => firstLoginPage()));
+        } else {
+          //wrongpassword use SnackBar to Show
+          scaffoldMessenger.showSnackBar(
+            mySnackBar("Wrong Credentials"),
+          );
+        }
+      }
+    } else {
+      setState(() {
+        DialogBuilder(context).hideOpenDialog();
+      });
+    }
+  }
 
 
   removeValues() async {
